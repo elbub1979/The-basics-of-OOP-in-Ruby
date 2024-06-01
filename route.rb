@@ -27,21 +27,15 @@ class Route
   end
 
   def next_station(current_station)
-    current_route = route
-    next_station_index = current_route.index(current_station) + 1
+    next_station_index = current_station_index(current_station) + 1
 
-    return nil if next_station_index > current_route.size - 1
-
-    current_route[next_station_index]
+    route[next_station_index]
   end
 
   def previous_station(current_station)
-    current_route = route
-    previous_station_index = current_route.index(current_station) - 1
+    next_station_index = current_station_index(current_station) - 1
 
-    return nil if previous_station_index.negative?
-
-    current_route[previous_station_index]
+    route[next_station_index]
   end
 
   private
@@ -52,5 +46,9 @@ class Route
 
   def route
     [@initial_station, *@intermediate_stations, @final_station].compact
+  end
+
+  def current_station_index(current_station)
+    route.index(current_station)
   end
 end

@@ -36,8 +36,8 @@ train_1.delete_wagon
 p train_1
 
 
-p train_1.next_station
-p train_1.previous_station
+p train_1.find_next_station
+p train_1.find_previous_station
 
 p train_1.move_next_station
 p train_1.move_previous_station
@@ -59,4 +59,3 @@ p train_1.move_previous_station
 p train_1.move_previous_station
 p train_1.move_previous_station
 p train_1.move_previous_station
-

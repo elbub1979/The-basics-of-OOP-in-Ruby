@@ -33,31 +33,39 @@ class Train
     return 'не задан маршрут' if @route.nil?
     return 'Достигли конца маршрута' if @current_station == @route.final_station
 
-    @current_station = @route.next_station(@current_station)
+    @current_station = next_station
   end
 
   def move_previous_station
     return 'не задан маршрут' if @route.nil?
     return 'Достигли начала маршрута' if @current_station == @route.initial_station
 
-    @current_station = @route.previous_station(@current_station)
+    @current_station = previous_station
   end
 
-  def next_station
+  def find_next_station
     return 'не задан маршрут' if @route.nil?
 
-    @route.next_station(@current_station) || 'Поезд на конечной станции'
+    next_station || 'Поезд на конечной станции'
   end
 
-  def previous_station
+  def find_previous_station
     return 'не задан маршрут' if @route.nil?
 
-    @route.previous_station(@current_station) || 'Поезд на начальной станции'
+    previous_station || 'Поезд на начальной станции'
   end
 
   private
 
   def train_standing?
     @speed.zero?
+  end
+
+  def next_station
+    @route.next_station(@current_station)
+  end
+
+  def previous_station
+    @route.previous_station(@current_station)
   end
 end
