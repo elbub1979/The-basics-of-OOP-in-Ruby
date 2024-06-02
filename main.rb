@@ -43,7 +43,10 @@ p train_1.move_next_station
 p train_1.move_previous_station
 
 
-train_1.give_route(route)
+train_1.assign_route(route)
+
+p train_1.find_next_station
+p train_1.find_previous_station
 
 p train_1.route
 p train_1.current_station

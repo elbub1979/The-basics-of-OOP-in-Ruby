@@ -9,6 +9,10 @@ class Route
     @intermediate_stations = []
   end
 
+  def stations
+    [@initial_station, *@intermediate_stations, @final_station].compact
+  end
+
   def station_list
     <<-LIST
 Список станций маршрута:
@@ -26,29 +30,9 @@ class Route
     @intermediate_stations.delete(station)
   end
 
-  def next_station(current_station)
-    next_station_index = current_station_index(current_station) + 1
-
-    route[next_station_index]
-  end
-
-  def previous_station(current_station)
-    next_station_index = current_station_index(current_station) - 1
-
-    route[next_station_index]
-  end
-
   private
 
   def intermediate_stations
     @intermediate_stations.map(&:name).join("\n")
-  end
-
-  def route
-    [@initial_station, *@intermediate_stations, @final_station].compact
-  end
-
-  def current_station_index(current_station)
-    route.index(current_station)
   end
 end

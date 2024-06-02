@@ -1,26 +1,17 @@
 # frozen_string_literal: true
 
 class Station
-  attr_reader :name
+  attr_reader :name, :trains
 
   def initialize(name)
     @name = name
     @trains = []
   end
 
-  def all_trains
-    @trains.map(&:number).join("\n")
-  end
-
   def trains_type
     return 'На станции нет поездов' if @trains.empty?
 
-    group_trains = @trains.group_by(&:type)
-
-    <<~TYPES
-    На станции находятся:
-    #{ group_trains.map { |key, value| "#{key}: #{value.size}" }.join("\n") }
-    TYPES
+    @trains.group_by(&:type).transform_values(&:size)
   end
 
   def train_departure(train)
@@ -31,4 +22,3 @@ class Station
     @trains << train
   end
 end
-

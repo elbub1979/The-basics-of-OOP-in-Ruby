@@ -3,7 +3,7 @@
 class Train
   TYPE = { passenger: 'пассажирский', cargo: 'грузовой' }.freeze
 
-  attr_reader :number, :wagons_number, :current_station, :route
+  attr_reader :number, :wagons_number, :current_station_index, :route
 
   attr_accessor :speed
 
@@ -24,35 +24,46 @@ class Train
     @wagons_number -= 1 if train_standing?
   end
 
-  def give_route(route)
+  def assign_route(route)
     @route = route
-    @current_station = route.initial_station
+    @current_station_index = 0
+    current_station.train_arrival(self)
   end
 
   def move_next_station
     return 'не задан маршрут' if @route.nil?
-    return 'Достигли конца маршрута' if @current_station == @route.final_station
+    return 'Достигли конца маршрута' if current_station_final?
 
-    @current_station = next_station
+    current_station.train_departure(self)
+    @current_station_index += 1
+    current_station.train_arrival(self)
   end
 
   def move_previous_station
     return 'не задан маршрут' if @route.nil?
-    return 'Достигли начала маршрута' if @current_station == @route.initial_station
+    return 'Достигли начала маршрута' if current_station_initial?
 
-    @current_station = previous_station
+    current_station.train_departure(self)
+    @current_station_index -= 1
+    current_station.train_arrival(self)
   end
 
   def find_next_station
     return 'не задан маршрут' if @route.nil?
+    return 'Поезд на конечной станции' if current_station_final?
 
-    next_station || 'Поезд на конечной станции'
+    @route.stations[@current_station_index + 1]
   end
 
   def find_previous_station
     return 'не задан маршрут' if @route.nil?
+    return 'Поезд на начальной станции' if current_station_initial?
 
-    previous_station || 'Поезд на начальной станции'
+    @route.stations[@current_station_index - 1]
+  end
+
+  def current_station
+    @route.stations[@current_station_index]
   end
 
   private
@@ -61,11 +72,11 @@ class Train
     @speed.zero?
   end
 
-  def next_station
-    @route.next_station(@current_station)
+  def current_station_initial?
+    current_station == @route.initial_station
   end
 
-  def previous_station
-    @route.previous_station(@current_station)
+  def current_station_final?
+    current_station == @route.final_station
   end
 end
