@@ -13,15 +13,6 @@ class Route
     [@initial_station, *@intermediate_stations, @final_station].compact
   end
 
-  def station_list
-    <<-LIST
-Список станций маршрута:
-#{@initial_station.name}
-#{intermediate_stations}
-#{@final_station.name}
-    LIST
-  end
-
   def add_intermediate_station(station)
     @intermediate_stations << station
   end
