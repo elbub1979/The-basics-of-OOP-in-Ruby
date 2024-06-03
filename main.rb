@@ -3,62 +3,27 @@
 require './route'
 require './station'
 require './train'
+require './passenger_train'
+require './cargo_train'
+require './wagon'
+require './passenger_wagon'
+require './cargo_wagon'
 
-train_1 = Train.new('0001', :passenger, 1)
-train_2 = Train.new('0002', :passenger, 2)
-train_3 = Train.new('0003', :passenger, 3)
+pass_wagon_1 = PassengerWagon.new('pass wagon 1')
+cargo_wagon_1 = CargoWagon.new('cargo wagon 1')
+pass_train = PassengerTrain.new('pass train 1')
+cargo_train = CargoTrain.new('cargo train 1')
+begin
+  pass_train.add_wagon(pass_wagon_1)
+  pass_train.add_wagon(cargo_wagon_1)
+rescue RuntimeError => e
+  puts e
+  #retry
+end
 
-train_4 = Train.new('0004', :cargo, 4)
-train_5 = Train.new('0005', :cargo, 5)
-train_6 = Train.new('0006', :cargo, 6)
+p pass_train
 
-station_1 = Station.new('Станция 1')
-station_2 = Station.new('Станция 2')
-station_3 = Station.new('Станция 3')
-station_4 = Station.new('Станция 4')
-station_5 = Station.new('Станция 5')
+cargo_train.add_wagon(pass_wagon_1)
+cargo_train.add_wagon(cargo_wagon_1)
 
-route = Route.new(station_1, station_4)
-
-#test route
-route.add_intermediate_station(station_2)
-route.add_intermediate_station(station_3)
-route.add_intermediate_station(station_5)
-puts route.station_list
-route.delete_intermediate_station(station_5)
-puts route.station_list
-
-#test train
-p train_1
-train_1.add_wagon
-p train_1
-train_1.delete_wagon
-p train_1
-
-
-p train_1.find_next_station
-p train_1.find_previous_station
-
-p train_1.move_next_station
-p train_1.move_previous_station
-
-
-train_1.assign_route(route)
-
-p train_1.find_next_station
-p train_1.find_previous_station
-
-p train_1.route
-p train_1.current_station
-
-#p train_1.next_station
-#p train_1.previous_station
-
-p train_1.move_next_station
-p train_1.move_next_station
-p train_1.move_next_station
-p train_1.move_next_station
-p train_1.move_previous_station
-p train_1.move_previous_station
-p train_1.move_previous_station
-p train_1.move_previous_station
+p cargo_train

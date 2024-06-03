@@ -1,27 +1,24 @@
 # frozen_string_literal: true
 
 class Train
-  TYPE = { passenger: 'пассажирский', cargo: 'грузовой' }.freeze
-
-  attr_reader :number, :wagons_number, :current_station_index, :route
+  attr_reader :number, :wagons, :current_station_index, :route
 
   attr_accessor :speed
 
-  def initialize(number, type, wagons_number)
+  def initialize(number, wagons = [])
     @number = number
-    @type = TYPE[type.to_sym] || 'undefined'
-    @wagons_number = wagons_number
+    @wagons = wagons
     @speed = 0
   end
 
-  def add_wagon
-    @wagons_number += 1 if train_standing?
+  def add_wagon(wagon)
+    @wagons << wagon if train_standing?
   end
 
-  def delete_wagon
-    return 'Поезд остался без вагонов' if @wagons_number.zero?
+  def delete_wagon(wagon)
+    return 'Поезд остался без вагонов' if @wagons.nil?
 
-    @wagons_number -= 1 if train_standing?
+    @wagons.delete(wagon) if train_standing?
   end
 
   def assign_route(route)
