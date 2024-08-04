@@ -13,12 +13,18 @@ class Route
     [@initial_station, *@intermediate_stations, @final_station].compact
   end
 
-  def add_intermediate_station(station)
-    @intermediate_stations << station
+  def add_intermediate_station(*stations)
+    @intermediate_stations.concat(stations)
   end
 
   def delete_intermediate_station(station)
     @intermediate_stations.delete(station)
+  end
+
+  def use?(station)
+    initial_station.equal?(station) || final_station.equal?(station) ||
+                             @intermediate_stations.
+                               any?{ |intermediate_station| intermediate_station.equal?(station) }
   end
 
   private
