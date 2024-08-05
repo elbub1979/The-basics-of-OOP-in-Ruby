@@ -8,6 +8,9 @@ require_relative 'libs/wagons/cargo_wagon'
 require_relative 'libs/wagons/passenger_wagon'
 
 class Railway
+
+  WAGONS_TYPE = { pass: PassengerWagon, cargo: CargoWagon}
+  TRAINS_TYPE = { pass: PassengerTrain, cargo: CargoTrain}
   def initialize
     @stations = []
     @trains = []
@@ -87,16 +90,16 @@ class Railway
   end
 
   def delete_station
-      puts stations
-      p 'Выберите станцию: '
-      index = Integer(gets)
-      station = @stations[index]
+    puts stations
+    p 'Выберите станцию: '
+    index = Integer(gets)
+    station = @stations[index]
 
-      return puts 'Такой станции не существует'  if station.nil?
-      return puts 'На станции есть поезда' unless station.trains.empty?
+    return puts 'Такой станции не существует' if station.nil?
+    return puts 'На станции есть поезда' unless station.trains.empty?
 
-      @stations.delete(station)
-      puts 'Станция удалена'
+    @stations.delete(station)
+    puts 'Станция удалена'
   end
 
   def stations_trains
@@ -105,21 +108,20 @@ class Railway
     index = Integer(gets)
     station = @stations[index]
 
-    return puts 'Такой станции не существует'  if station.nil?
+    return puts 'Такой станции не существует' if station.nil?
 
-    station.trains.map { |train| "#{train.number}: маршрут #{train.route.initial_station || ''}  - #{train.route.initial_station  || ''}" }.join("\n")
+    station.trains.map { |train| "#{train.number}: маршрут #{train.route.initial_station || ''}  - #{train.route.initial_station || ''}" }.join("\n")
   end
-
 
   def routes_menu
     loop do
-      puts <<~STATIONMENU
+      puts <<~ROUTESMENU
         1. Список маршрутов
         2. Создать маршрут
         3. Удалить маршрут
-        5. Добавить промежуточные станции 
-        4. Вернуться
-      STATIONMENU
+        4. Добавить промежуточные станции 
+        5. Вернуться
+      ROUTESMENU
 
       choice = Integer(gets)
 
@@ -141,7 +143,7 @@ class Railway
   end
 
   def routes
-    puts @routes.map.with_index { |route, index| "#{index}: #{route.initial_station}  - #{route.initial_station}"}.join("\n")
+    puts @routes.map.with_index { |route, index| "#{index}: #{route.initial_station}  - #{route.initial_station}" }.join("\n")
   end
 
   def create_route
@@ -160,6 +162,18 @@ class Railway
     final_station = @stations[1]
 
     @routes << Route.new(initial_station, final_station)
+  end
+
+  def delete_route
+    puts routes
+    p 'Выберите маршрут: '
+    index = Integer(gets)
+    route = @routes[index]
+
+    return puts 'Такого маршрута не существует' if route.nil?
+
+    @routes.delete(route)
+    puts 'Маршрут удален'
   end
 
   def add_intermediate_stations
@@ -185,7 +199,7 @@ class Railway
   end
 
   def free_stations
-    @stations.reject { |station| @routes.any?{ |route| route.use?(station) } }
+    @stations.reject { |station| @routes.any? { |route| route.use?(station) } }
   end
 
   def select_out_of_range(stations_indexes)
@@ -194,10 +208,138 @@ class Railway
   end
 
   def wagons_menu
-    puts 'wagons_menu'
+    loop do
+      puts <<~WAGONSMENU
+        1. Список вагонов
+        2. Создать вагон
+        3. Удалить вагон
+        4. Вернуться
+      WAGONSMENU
+
+      choice = Integer(gets)
+
+      case choice
+      when 1
+        wagons
+      when 2
+        create_wagon
+      when 3
+        delete_wagon
+      when 4
+        exit
+      else
+        puts 'Выберите один из указанных пунктов меню'
+      end
+    end
+  end
+
+  def wagons
+    puts @wagons.map { |wagon| "#{wagon.class}: #{wagon.number}" }.join("\n")
+  end
+
+  def create_wagon
+    p 'Введите номер вагона:'
+    number = Integer(gets)
+
+    return puts 'Введите корректный номер' if number.nil?
+
+    p 'Введите тип вагона (pass или cargo):'
+
+    choice = gets.chomp.to_sym
+
+    return puts 'Выбран несуществющий тип вагона' if WAGONS_TYPE[choice].nil?
+
+    @wagons << WAGONS_TYPE[choice].new(number)
+  end
+
+  def delete_wagon
+    p 'Введите номер вагона:'
+    number = Integer(gets)
+
+    return puts 'Введите корректный номер' if number.nil?
+
+    wagon = @wagons[number]
+
+    return puts 'Выберите вагон из списка' if wagon.nil?
+    return puts 'Вагон прицеплен к поезду' if wagon_used?(wagon)
+
+    @trains.wagons.delete(wagon)
+  end
+
+  def wagon_used?(wagon)
+    @trains.any { |train| train.use?(wagon) }
   end
 
   def trains_menu
-    puts 'trains_menu'
+    loop do
+      puts <<~TRAINSNMENU
+        1. Список поездов
+        2. Создать поезд
+        3. Удалить поезд
+        4. Прицепить вагон к поезду
+        5. Отцепить вагон от поезда
+        6. Присвоить маршрут
+        7. Переместить на следующую станцию
+        8. Переместить на предыдущую станцию   
+        9. Вернуться
+      TRAINSNMENU
+
+      choice = Integer(gets)
+
+      case choice
+      when 1
+        trains
+      when 2
+        create_train
+      when 3
+        delete_train
+      when 4
+        add_wagon
+      when 5
+        delete_wagon
+      when 6
+        assign_route
+      when 7
+        move_next_station
+      when 8
+        move_previous_station
+      when 9
+        exit
+      else
+        puts 'Выберите один из указанных пунктов меню'
+      end
+    end
+  end
+
+  def trains
+    puts @trains.map { |train| "#{number}, #{train.class.to_s}, #{train.route.extreme_stations.map(&:name).join(" - ")}" }
+  end
+
+  def create_train
+    p 'Введите номер поезда:'
+    number = Integer(gets)
+
+    return puts 'Введите корректный номер' if number.nil?
+
+    p 'Введите тип поезда (pass или cargo):'
+
+    choice = gets.chomp.to_sym
+
+    return puts 'Выбран несуществющий тип вагона' if TRAINS_TYPE[choice].nil?
+
+    @trains << TRAINS_TYPE[choice].new(number)
+  end
+
+  def delete_train
+    p 'Введите номер поезда:'
+    number = Integer(gets)
+
+    return puts 'Введите корректный номер' if number.nil?
+
+    train = @trains[number]
+
+    return puts 'Выберите поезд из списка' if train.nil?
+
+    @trains.delete(train)
   end
 end

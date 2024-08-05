@@ -13,6 +13,10 @@ class Route
     [@initial_station, *@intermediate_stations, @final_station].compact
   end
 
+  def extreme_stations
+    [@initial_station, @final_station]
+  end
+
   def add_intermediate_station(*stations)
     @intermediate_stations.concat(stations)
   end

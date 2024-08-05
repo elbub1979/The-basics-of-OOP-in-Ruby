@@ -76,4 +76,8 @@ class Train
   def current_station_final?
     current_station == @route.final_station
   end
+
+  def use?(wagon)
+    @wagons.include?(wagon)
+  end
 end
