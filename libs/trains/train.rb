@@ -63,6 +63,10 @@ class Train
     @route.stations[@current_station_index]
   end
 
+  def type
+    self.class.to_s
+  end
+
   private
 
   def train_standing?
