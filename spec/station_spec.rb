@@ -44,7 +44,7 @@ RSpec.describe Station do
   describe 'train_types' do
     context 'empty trains' do
       it 'return notice' do
-        expect(@station.trains_type).to eq('На станции нет поездов')
+        expect {@station.trains_type}.to raise_error(StandardError)
       end
 
       context 'have trains' do

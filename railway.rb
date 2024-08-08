@@ -30,7 +30,12 @@ class Railway
         5. Выход
       MAINMENU
 
-      choice = Integer(gets)
+      begin
+        choice = Integer(gets)
+      rescue
+        puts('Введите число')
+        next
+      end
 
       case choice
       when 1
@@ -61,7 +66,12 @@ class Railway
         5. Вернуться
       STATIONMENU
 
-      choice = Integer(gets)
+      begin
+        choice = Integer(gets)
+      rescue
+        puts 'Введите число'
+        retry
+      end
 
       case choice
       when 1
@@ -81,7 +91,11 @@ class Railway
   end
 
   def stations
-    puts @stations.map.with_index { |station, index| "#{index}: #{station.name}" }.join("\n")
+    if @stations.empty?
+      puts 'Станций нет'
+    else
+      puts @stations.map.with_index { |station, index| "#{index}: #{station.name}" }.join("\n")
+    end
   end
 
   def create_station
@@ -317,7 +331,7 @@ class Railway
   end
 
   def trains
-    puts @trains.map { |train| "#{number}, #{train.class.to_s}, #{train.route.extreme_stations.map(&:name).join(" - ")}" }
+    puts @trains.map { |train| "#{train.number}, #{train.class.to_s}, #{train.route&.extreme_stations&.map(&:name)&.join(" - ")}" }
   end
 
   def create_train
@@ -405,16 +419,20 @@ class Railway
 
     puts routes
 
-    route = @routes[Integer.gets]
-
-    return puts 'Маршрута не существует' if route.nil?
+    begin
+      route = @routes[Integer.gets]
+    rescue
+      return puts 'Маршрута не существует'
+    end
 
     puts 'Выберите поезд'
     puts trains
 
-    train = @trains[Integer(gets)]
-
-    return puts 'Поезда не существует' if train.nil?
+    begin
+      train = @trains[Integer(gets)]
+    rescue
+      return puts 'Поезда не существует'
+    end
 
     train.assign_route(route)
   end
@@ -425,9 +443,8 @@ class Railway
 
     begin
       train = @trains[Integer(gets)]
-      raise ArgumentError, 'Поезда не существует'
-    rescue => error
-      puts error
+    rescue
+      return puts 'Такого поезда не существует'
     end
 
     begin
@@ -443,9 +460,8 @@ class Railway
 
     begin
       train = @trains[Integer(gets)]
-      raise ArgumentError, 'Поезда не существует'
-    rescue => error
-      puts error
+    rescue
+      return puts 'Такого поезда не существует'
     end
 
     begin

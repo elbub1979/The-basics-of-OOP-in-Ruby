@@ -9,7 +9,7 @@ class Station
   end
 
   def trains_type
-    return 'На станции нет поездов' if @trains.empty?
+    raise StandardError.new('На станции нет поездов') if @trains.empty?
 
     @trains.group_by(&:type).transform_values(&:size)
   end

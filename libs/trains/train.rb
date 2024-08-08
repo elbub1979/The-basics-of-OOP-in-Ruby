@@ -9,6 +9,7 @@ class Train
     @number = number
     @wagons = wagons
     @speed = 0
+    @route = nil
   end
 
   def add_wagon(wagon)
