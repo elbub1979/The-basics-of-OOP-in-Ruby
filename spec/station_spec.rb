@@ -46,6 +46,7 @@ RSpec.describe Station do
       it 'return notice' do
         expect(@station.trains_type).to eq('На станции нет поездов')
       end
+
       context 'have trains' do
         before do
           @cargo_train = CargoTrain.new('0001')
@@ -58,8 +59,6 @@ RSpec.describe Station do
         end
       end
     end
-
-
   end
 end
 

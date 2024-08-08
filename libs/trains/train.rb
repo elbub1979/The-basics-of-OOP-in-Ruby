@@ -28,8 +28,8 @@ class Train
   end
 
   def move_next_station
-    return 'не задан маршрут' if @route.nil?
-    return 'Достигли конца маршрута' if current_station_final?
+    raise StandardError.new('Не задан маршрут') if @route.nil?
+    raise StandardError.new('Достигли конца маршрута') if current_station_final?
 
     current_station.train_departure(self)
     @current_station_index += 1
@@ -37,8 +37,8 @@ class Train
   end
 
   def move_previous_station
-    return 'не задан маршрут' if @route.nil?
-    return 'Достигли начала маршрута' if current_station_initial?
+    raise StandardError.new('Не задан маршрут') if @route.nil?
+    raise StandardError.new('Достигли начала маршрута') if current_station_initial?
 
     current_station.train_departure(self)
     @current_station_index -= 1

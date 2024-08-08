@@ -17,10 +17,11 @@ GEM
     rspec-support (3.13.1)
 
 PLATFORMS
+  x64-mingw-ucrt
   x86_64-linux
 
 DEPENDENCIES
   rspec
 
 BUNDLED WITH
-   2.4.19
+   2.5.17

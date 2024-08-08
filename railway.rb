@@ -9,8 +9,9 @@ require_relative 'libs/wagons/passenger_wagon'
 
 class Railway
 
-  WAGONS_TYPE = { pass: PassengerWagon, cargo: CargoWagon}
-  TRAINS_TYPE = { pass: PassengerTrain, cargo: CargoTrain}
+  WAGONS_TYPE = { pass: PassengerWagon, cargo: CargoWagon }
+  TRAINS_TYPE = { pass: PassengerTrain, cargo: CargoTrain }
+
   def initialize
     @stations = []
     @trains = []
@@ -72,7 +73,7 @@ class Railway
       when 4
         stations_trains
       when 5
-        exit
+        return
       else
         puts 'Выберите один из указанных пунктов меню'
       end
@@ -135,7 +136,7 @@ class Railway
       when 4
         add_intermediate_stations
       when 5
-        exit
+        return
       else
         puts 'Выберите один из указанных пунктов меню'
       end
@@ -150,13 +151,13 @@ class Railway
     return puts 'Нет станций для создания маршрута' if @stations.empty? || @stations.size == 1
     return puts 'Нет свободных станций' unless free_stations.size > 1
 
-    puts free_stations
+    puts free_stations_list
 
     p 'Выберите начальную и конечную станцию (через пробел)'
 
     selected_stations_index = gets.chomp.split(' ').map(&:to_i)
 
-    return puts 'Выбранный(ые) индексы вне указанного диапазона' if select_out_of_range(selected_stations_index)
+    return puts 'Выбранный(ые) индексы вне указанного диапазона' if select_stations_out_of_range(selected_stations_index)
 
     initial_station = @stations[0]
     final_station = @stations[1]
@@ -186,13 +187,13 @@ class Railway
 
     return puts 'Выбран несуществующий маршрут' if route.nil?
 
-    puts free_stations
+    puts free_stations_list
 
     p 'Выберите начальную и конечную станцию (через пробел)'
 
     selected_stations_index = gets.chomp.split(' ').map(&:to_i)
 
-    return puts 'Выбранный(ые) индексы вне указанного диапазона' if select_out_of_range(selected_stations_index)
+    return puts 'Выбранный(ые) индексы вне указанного диапазона' if select_stations_out_of_range(selected_stations_index)
 
     intermediate_stations = selected_stations_index.map { |index| @stations[index] }
     route.add_intermediate_station(*intermediate_stations)
@@ -202,9 +203,13 @@ class Railway
     @stations.reject { |station| @routes.any? { |route| route.use?(station) } }
   end
 
-  def select_out_of_range(stations_indexes)
-    stations_indexes_range = (0..@stations.size - 1)
-    stations_indexes.any? { |index| !stations_indexes_range.cover?(index) }
+  def free_stations_list
+    free_stations.map.with_index { |station, index| "#{index}: #{station.name}" }.join("\n")
+  end
+
+  def select_stations_out_of_range(stations_indexes)
+    free_stations_indexes_range = (0..free_stations.size - 1)
+    stations_indexes.any? { |index| !free_stations_indexes_range.cover?(index) }
   end
 
   def wagons_menu
@@ -226,7 +231,7 @@ class Railway
       when 3
         delete_wagon
       when 4
-        exit
+        return
       else
         puts 'Выберите один из указанных пунктов меню'
       end
@@ -296,7 +301,7 @@ class Railway
       when 4
         add_wagon
       when 5
-        delete_wagon
+        remove_wagon
       when 6
         assign_route
       when 7
@@ -304,7 +309,7 @@ class Railway
       when 8
         move_previous_station
       when 9
-        exit
+        return
       else
         puts 'Выберите один из указанных пунктов меню'
       end
@@ -341,5 +346,112 @@ class Railway
     return puts 'Выберите поезд из списка' if train.nil?
 
     @trains.delete(train)
+  end
+
+  def add_wagon
+    return puts 'Нет свободных вагонов' if free_wagons.empty?
+
+    puts 'Выберите поезд'
+    puts trains
+
+    train = @trains[Integer(gets)]
+
+    return puts 'Поезда не существует' if train.nil?
+
+    puts free_wagons_list
+
+    puts 'Выберите вагон из списка'
+    wagon = free_wagons[Integer(gets)]
+
+    return puts 'Вагона не существует' if wagon.nil?
+
+    train.add_wagon(wagon)
+  end
+
+  def free_wagons
+    @wagons.reject { |wagon| @trains.any? { |train| train.use?(wagon) } }
+  end
+
+  def free_wagons_list
+    free_wagons.map.with_index { |wagon, index| "#{index}: #{wagon.number}" }
+  end
+
+  def remove_wagon
+    puts 'Выберите поезд'
+    puts trains
+
+    train = @trains[Integer(gets)]
+
+    return puts 'Поезда не существует' if train.nil?
+
+    puts train_wagons(train)
+
+    puts 'Выберите вагон из списка'
+    wagon = train.wagons[Integer(gets)]
+
+    return puts 'Вагона не существует' if wagon.nil?
+
+    train.delete_wagon(wagon)
+  end
+
+  def train_wagons(train)
+    train.wagons.map.with_index { |wagon, index| "#{index}: #{wagon.number}" }
+  end
+
+  def assign_route
+    return puts 'Нет маршрутов' if @routes.empty?
+
+    puts 'Выберите маршрут'
+
+    puts routes
+
+    route = @routes[Integer.gets]
+
+    return puts 'Маршрута не существует' if route.nil?
+
+    puts 'Выберите поезд'
+    puts trains
+
+    train = @trains[Integer(gets)]
+
+    return puts 'Поезда не существует' if train.nil?
+
+    train.assign_route(route)
+  end
+
+  def move_next_station
+    puts 'Выберите поезд'
+    puts trains
+
+    begin
+      train = @trains[Integer(gets)]
+      raise ArgumentError, 'Поезда не существует'
+    rescue => error
+      puts error
+    end
+
+    begin
+      train.move_next_station
+    rescue => error
+      puts error
+    end
+  end
+
+  def move_previous_station
+    puts 'Выберите поезд'
+    puts trains
+
+    begin
+      train = @trains[Integer(gets)]
+      raise ArgumentError, 'Поезда не существует'
+    rescue => error
+      puts error
+    end
+
+    begin
+      train.move_previous_station
+    rescue => error
+      puts error
+    end
   end
 end
