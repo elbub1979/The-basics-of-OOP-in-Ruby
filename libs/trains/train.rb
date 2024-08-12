@@ -9,7 +9,6 @@ class Train
     @number = number
     @wagons = wagons
     @speed = 0
-    @route = nil
   end
 
   def add_wagon(wagon)
@@ -47,15 +46,15 @@ class Train
   end
 
   def find_next_station
-    return 'не задан маршрут' if @route.nil?
-    return 'Поезд на конечной станции' if current_station_final?
+    raise StandardError.new('Не задан маршрут') if @route.nil?
+    raise StandardError.new('Поезд на конечной станции') if current_station_final?
 
     @route.stations[@current_station_index + 1]
   end
 
   def find_previous_station
-    return 'не задан маршрут' if @route.nil?
-    return 'Поезд на начальной станции' if current_station_initial?
+    raise StandardError.new('Не задан маршрут') if @route.nil?
+    raise StandardError.new('Поезд на начальной станции') if current_station_initial?
 
     @route.stations[@current_station_index - 1]
   end
