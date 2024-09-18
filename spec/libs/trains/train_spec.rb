@@ -67,6 +67,7 @@ RSpec.describe Train do
       route.add_intermediate_station(intermediate_station_1, intermediate_station_2)
       train.assign_route(route)
     end
+    
     context '#move_next_station' do
       it "train move 'Tver' station" do
         train.move_next_station
