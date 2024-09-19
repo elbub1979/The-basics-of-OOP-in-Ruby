@@ -6,6 +6,9 @@ require_relative 'libs/trains/passenger_train'
 require_relative 'libs/wagons/wagon'
 require_relative 'libs/wagons/cargo_wagon'
 require_relative 'libs/wagons/passenger_wagon'
+require_relative 'libs/modules/manufacturer.rb'
+require_relative 'libs/modules/instance_counter.rb'
+
 Dir["./menus/*.rb"].each { |file| require_relative file }
 
 class Railway

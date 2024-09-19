@@ -1,3 +1,5 @@
+require_relative '../../../libs/modules/manufacturer'
+require_relative '../../../libs/modules/instance_counter'
 require_relative '../../../libs/station'
 require_relative '../../../libs/route'
 require_relative '../../../libs/trains/train'
@@ -86,8 +88,6 @@ RSpec.describe Train do
 
           it 'return standard error exception' do
             expect(train.move_next_station).to raise_error(StandardError)
-
-
           end
         end
 

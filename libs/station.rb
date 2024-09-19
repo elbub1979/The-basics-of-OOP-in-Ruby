@@ -1,6 +1,12 @@
 # frozen_string_literal: true
 
 class Station
+  class << self
+    def all
+      ObjectSpace.each_object(self).each_with_object([]) { |instance, accum| accum << instance }
+    end
+  end
+
   attr_reader :name, :trains
 
   def initialize(name)

@@ -1,14 +1,23 @@
 # frozen_string_literal: true
 
 class Train
-  attr_reader :number, :wagons, :current_station_index, :route
+  include Manufacturer
+  include InstanceCounter
 
+  class << self
+    def find(number)
+      ObjectSpace.each_object(self).select { |instance| instance.number == number }
+    end
+  end
+
+  attr_reader :number, :wagons, :current_station_index, :route
   attr_accessor :speed
 
   def initialize(number, wagons = [])
     @number = number
     @wagons = wagons
     @speed = 0
+    register_instance
   end
 
   def add_wagon(wagon)
