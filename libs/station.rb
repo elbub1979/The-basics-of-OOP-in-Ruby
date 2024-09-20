@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class Station
+  include InstanceCounter
+
   class << self
     def all
       ObjectSpace.each_object(self).each_with_object([]) { |instance, accum| accum << instance }
@@ -12,6 +14,7 @@ class Station
   def initialize(name)
     @name = name
     @trains = []
+    register_instance
   end
 
   def trains_type
