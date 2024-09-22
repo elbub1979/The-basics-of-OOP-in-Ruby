@@ -3,7 +3,8 @@
 class Train
   include Manufacturer
   include InstanceCounter
-
+  include Validators
+  
   class << self
     def find(number)
       ObjectSpace.each_object(self).select { |instance| instance.number == number }
@@ -14,6 +15,7 @@ class Train
   attr_accessor :speed
 
   def initialize(number, wagons = [])
+    validate!
     @number = number
     @wagons = wagons
     @speed = 0
@@ -37,8 +39,8 @@ class Train
   end
 
   def move_next_station
-    raise StandardError.new('Не задан маршрут') if @route.nil?
-    raise StandardError.new('Достигли конца маршрута') if current_station_final?
+    raise StandardError, 'Не задан маршрут' if @route.nil?
+    raise StandardError, 'Достигли конца маршрута' if current_station_final?
 
     current_station.train_departure(self)
     @current_station_index += 1
@@ -46,8 +48,8 @@ class Train
   end
 
   def move_previous_station
-    raise StandardError.new('Не задан маршрут') if @route.nil?
-    raise StandardError.new('Достигли начала маршрута') if current_station_initial?
+    raise StandardError, 'Не задан маршрут' if @route.nil?
+    raise StandardError, 'Достигли начала маршрута' if current_station_initial?
 
     current_station.train_departure(self)
     @current_station_index -= 1
@@ -55,15 +57,15 @@ class Train
   end
 
   def find_next_station
-    raise StandardError.new('Не задан маршрут') if @route.nil?
-    raise StandardError.new('Поезд на конечной станции') if current_station_final?
+    raise StandardError, 'Не задан маршрут' if @route.nil?
+    raise StandardError, 'Поезд на конечной станции' if current_station_final?
 
     @route.stations[@current_station_index + 1]
   end
 
   def find_previous_station
-    raise StandardError.new('Не задан маршрут') if @route.nil?
-    raise StandardError.new('Поезд на начальной станции') if current_station_initial?
+    raise StandardError, 'Не задан маршрут' if @route.nil?
+    raise StandardError, 'Поезд на начальной станции' if current_station_initial?
 
     @route.stations[@current_station_index - 1]
   end
@@ -77,6 +79,10 @@ class Train
   end
 
   private
+
+  def validate!
+    raise StandardError, 'Введите корректный номер' unless name =~ /^[a-z0-9]{3}-?[a-z0-9]{2}$/i
+  end
 
   def train_standing?
     @speed.zero?

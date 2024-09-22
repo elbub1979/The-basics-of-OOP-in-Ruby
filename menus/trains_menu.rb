@@ -42,7 +42,8 @@ module TrainsMenu
   end
 
   def trains
-    puts @trains.map { |train| "#{train.number}, #{train.class.to_s}, #{train.route&.extreme_stations&.map(&:name)&.join(" - ")}" }
+    puts(@trains.map { |train|
+ "#{train.number}, #{train.class}, #{train.route&.extreme_stations&.map(&:name)&.join(' - ')}" })
   end
 
   def create_train
@@ -92,8 +93,8 @@ module TrainsMenu
 
     begin
       train.add_wagon(wagon)
-    rescue => error
-      puts error
+    rescue StandardError => e
+      puts e
     end
   end
 
@@ -136,7 +137,7 @@ module TrainsMenu
 
     begin
       route = @routes[Integer.gets]
-    rescue
+    rescue StandardError
       return puts 'Маршрута не существует'
     end
 
@@ -145,7 +146,7 @@ module TrainsMenu
 
     begin
       train = @trains[Integer(gets)]
-    rescue
+    rescue StandardError
       return puts 'Поезда не существует'
     end
 
@@ -158,14 +159,14 @@ module TrainsMenu
 
     begin
       train = @trains[Integer(gets)]
-    rescue
+    rescue StandardError
       return puts 'Такого поезда не существует'
     end
 
     begin
       train.move_next_station
-    rescue => error
-      puts error
+    rescue StandardError => e
+      puts e
     end
   end
 
@@ -175,14 +176,14 @@ module TrainsMenu
 
     begin
       train = @trains[Integer(gets)]
-    rescue
+    rescue StandardError
       return puts 'Такого поезда не существует'
     end
 
     begin
       train.move_previous_station
-    rescue => error
-      puts error
+    rescue StandardError => e
+      puts e
     end
   end
 end

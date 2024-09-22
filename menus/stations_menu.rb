@@ -11,7 +11,7 @@ module StationsMenu
 
       begin
         choice = Integer(gets)
-      rescue
+      rescue StandardError
         puts 'Введите число'
         retry
       end
@@ -44,13 +44,27 @@ module StationsMenu
   def create_station
     p 'Введите название станции: '
     name = gets.chomp
-    @stations << Station.new(name)
+
+    begin
+      station = Station.new(name)
+      @stations << station
+      puts "Станция #{station.name} создана"
+    rescue StandardError => e
+      puts e
+    end
   end
 
   def delete_station
     puts stations
+
     p 'Выберите станцию: '
-    index = Integer(gets)
+
+    begin
+      index = Integer(gets)
+    rescue ArgumentError => e
+      return puts e
+    end
+
     station = @stations[index]
 
     return puts 'Такой станции не существует' if station.nil?
@@ -63,11 +77,17 @@ module StationsMenu
   def stations_trains
     puts stations
     p 'Выберите станцию: '
-    index = Integer(gets)
+
+    begin
+      index = Integer(gets)
+    rescue ArgumentError => e
+      return puts e
+    end
+
     station = @stations[index]
 
     return puts 'Такой станции не существует' if station.nil?
 
-    station.trains.map { |train| "#{train.number}: маршрут #{train.route.initial_station || ''}  - #{train.route.initial_station || ''}" }.join("\n")
+    station.trains.map { |train| "#{train.number}: маршрут #{train.route.initial_station || ''} - #{train.route.initial_station || ''}" }.join("\n")
   end
 end

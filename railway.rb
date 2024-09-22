@@ -6,16 +6,18 @@ require_relative 'libs/trains/passenger_train'
 require_relative 'libs/wagons/wagon'
 require_relative 'libs/wagons/cargo_wagon'
 require_relative 'libs/wagons/passenger_wagon'
-require_relative 'libs/modules/manufacturer.rb'
-require_relative 'libs/modules/instance_counter.rb'
 
-Dir["./menus/*.rb"].each { |file| require_relative file }
+Dir['./libs/modules/*.rb'].each { |file| require_relative file }
+Dir['./menus/*.rb'].each { |file| require_relative file }
 
 class Railway
-  include RoutesMenu, StationsMenu, TrainsMenu, WagonsMenu
+  include WagonsMenu
+  include TrainsMenu
+  include StationsMenu
+  include RoutesMenu
 
-  WAGONS_TYPE = { pass: PassengerWagon, cargo: CargoWagon }
-  TRAINS_TYPE = { pass: PassengerTrain, cargo: CargoTrain }
+  WAGONS_TYPE = { pass: PassengerWagon, cargo: CargoWagon }.freeze
+  TRAINS_TYPE = { pass: PassengerTrain, cargo: CargoTrain }.freeze
 
   def initialize
     @stations = []
@@ -37,7 +39,7 @@ class Railway
 
       begin
         choice = Integer(gets)
-      rescue
+      rescue StandardError
         puts('Введите число')
         next
       end

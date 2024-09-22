@@ -1,7 +1,9 @@
 # frozen_string_literal: true
 
+# Station class
 class Station
   include InstanceCounter
+  include Validators
 
   class << self
     def all
@@ -12,13 +14,14 @@ class Station
   attr_reader :name, :trains
 
   def initialize(name)
+    validate!
     @name = name
     @trains = []
     register_instance
   end
 
   def trains_type
-    raise StandardError.new('На станции нет поездов') if @trains.empty?
+    raise StandardError, 'На станции нет поездов' if @trains.empty?
 
     @trains.group_by(&:type).transform_values(&:size)
   end
@@ -29,5 +32,13 @@ class Station
 
   def train_arrival(train)
     @trains << train
+  end
+
+  private
+
+  def validate!
+    raise StandardError, 'На звание станции не может быть пустым' if name.gsub(/[[:space:]]/, '').empty?
+    raise StandardError, 'Введите первым символом букву' unless name =~ /^[a-z]+.+$/i
+    raise StandardError, 'Слишком длинное название станции' if name.size > 25
   end
 end
