@@ -10,11 +10,16 @@ module TrainsMenu
         5. Отцепить вагон от поезда
         6. Присвоить маршрут
         7. Переместить на следующую станцию
-        8. Переместить на предыдущую станцию   
+        8. Переместить на предыдущую станцию#{'   '}
         9. Вернуться
       TRAINSNMENU
 
-      choice = Integer(gets)
+      begin
+        choice = Integer(gets)
+      rescue ArgumentError => e
+        puts e
+        next
+      end
 
       case choice
       when 1
@@ -43,29 +48,42 @@ module TrainsMenu
 
   def trains
     puts(@trains.map { |train|
- "#{train.number}, #{train.class}, #{train.route&.extreme_stations&.map(&:name)&.join(' - ')}" })
+      "#{train.number}, #{train.class}, #{train.route&.extreme_stations&.map(&:name)&.join(' - ')}" })
   end
 
   def create_train
     p 'Введите номер поезда:'
-    number = Integer(gets)
 
-    return puts 'Введите корректный номер' if number.nil?
+    begin
+      number = Integer(gets)
+    rescue ArgumentError
+      puts 'Введите корректный номер'
+      retry
+    end
 
     p 'Введите тип поезда (pass или cargo):'
 
-    choice = gets.chomp.to_sym
-
-    return puts 'Выбран несуществющий тип вагона' if TRAINS_TYPE[choice].nil?
+    begin
+      choice = gets.chomp.to_sym
+      Train.trains_type!(choice)
+    rescue StandardError => e
+      puts e
+      retry
+    end
 
     @trains << TRAINS_TYPE[choice].new(number)
+    puts "Поезд #{number} создан"
   end
 
   def delete_train
     p 'Введите номер поезда:'
-    number = Integer(gets)
 
-    return puts 'Введите корректный номер' if number.nil?
+    begin
+      number = Integer(gets)
+    rescue ArgumentError
+      puts 'Введите корректный номер'
+      retry
+    end
 
     train = @trains[number]
 
@@ -80,14 +98,29 @@ module TrainsMenu
     puts 'Выберите поезд'
     puts trains
 
-    train = @trains[Integer(gets)]
+    begin
+      number = Integer(gets)
+    rescue ArgumentError
+      puts 'Введите корректный номер'
+      retry
+    end
+
+    train = @trains[number]
 
     return puts 'Поезда не существует' if train.nil?
 
     puts free_wagons_list
 
     puts 'Выберите вагон из списка'
-    wagon = free_wagons[Integer(gets)]
+
+    begin
+      number = Integer(gets)
+    rescue ArgumentError
+      puts 'Введите корректный номер'
+      retry
+    end
+
+    wagon = free_wagons[number]
 
     return puts 'Вагона не существует' if wagon.nil?
 
@@ -110,14 +143,29 @@ module TrainsMenu
     puts 'Выберите поезд'
     puts trains
 
-    train = @trains[Integer(gets)]
+    begin
+      number = Integer(gets)
+    rescue ArgumentError
+      puts 'Введите корректный номер'
+      retry
+    end
+
+    train = @trains[number]
 
     return puts 'Поезда не существует' if train.nil?
 
     puts train_wagons(train)
 
     puts 'Выберите вагон из списка'
-    wagon = train.wagons[Integer(gets)]
+
+    begin
+      number = Integer(gets)
+    rescue ArgumentError
+      puts 'Введите корректный номер'
+      retry
+    end
+
+    wagon = train.wagons[number]
 
     return puts 'Вагона не существует' if wagon.nil?
 
@@ -136,19 +184,28 @@ module TrainsMenu
     puts routes
 
     begin
-      route = @routes[Integer.gets]
-    rescue StandardError
-      return puts 'Маршрута не существует'
+      number = Integer(gets)
+    rescue ArgumentError
+      puts 'Введите корректный номер'
+      retry
     end
+
+    route = @routes[number]
+
+    return puts 'Маршрута не существует' if route.nil?
 
     puts 'Выберите поезд'
     puts trains
 
     begin
-      train = @trains[Integer(gets)]
-    rescue StandardError
-      return puts 'Поезда не существует'
+      number = Integer(gets)
+    rescue ArgumentError
+      puts 'Введите корректный номер'
+      retry
     end
+
+    train = @trains[number]
+    return puts 'Поезда не существует' if train.nil?
 
     train.assign_route(route)
   end
@@ -158,10 +215,14 @@ module TrainsMenu
     puts trains
 
     begin
-      train = @trains[Integer(gets)]
-    rescue StandardError
-      return puts 'Такого поезда не существует'
+      number = Integer(gets)
+    rescue ArgumentError
+      puts 'Введите корректный номер'
+      retry
     end
+
+    train = @trains[number]
+    return puts 'Такого поезда не существует' if train.nil?
 
     begin
       train.move_next_station
@@ -175,10 +236,14 @@ module TrainsMenu
     puts trains
 
     begin
-      train = @trains[Integer(gets)]
-    rescue StandardError
-      return puts 'Такого поезда не существует'
+      number = Integer(gets)
+    rescue ArgumentError
+      puts 'Введите корректный номер'
+      retry
     end
+
+    train = @trains[number]
+    return puts 'Такого поезда не существует' if train.nil?
 
     begin
       train.move_previous_station

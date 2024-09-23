@@ -8,7 +8,12 @@ module WagonsMenu
         4. Вернуться
       WAGONSMENU
 
-      choice = Integer(gets)
+      begin
+        choice = Integer(gets)
+      rescue ArgumentError => e
+        puts e
+        next
+      end
 
       case choice
       when 1
@@ -31,24 +36,36 @@ module WagonsMenu
 
   def create_wagon
     p 'Введите номер вагона:'
-    number = Integer(gets)
 
-    return puts 'Введите корректный номер' if number.nil?
+    begin
+      number = Integer(gets)
+    rescue ArgumentError
+      puts 'Введите корректный номер'
+      retry
+    end
 
     p 'Введите тип вагона (pass или cargo):'
 
-    choice = gets.chomp.to_sym
-
-    return puts 'Выбран несуществющий тип вагона' if WAGONS_TYPE[choice].nil?
+    begin
+      choice = gets.chomp.to_sym
+      Wagon.wagons_type!(choice)
+    rescue StandardError => e
+      puts e
+      retry
+    end
 
     @wagons << WAGONS_TYPE[choice].new(number)
   end
 
   def delete_wagon
     p 'Введите номер вагона:'
-    number = Integer(gets)
 
-    return puts 'Введите корректный номер' if number.nil?
+    begin
+      number = Integer(gets)
+    rescue ArgumentError
+      puts 'Введите корректный номер'
+      retry
+    end
 
     wagon = @wagons[number]
 

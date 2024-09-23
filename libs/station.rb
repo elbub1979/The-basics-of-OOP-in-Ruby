@@ -37,7 +37,7 @@ class Station
   private
 
   def validate!
-    raise StandardError, 'На звание станции не может быть пустым' if name.gsub(/[[:space:]]/, '').empty?
+    # raise StandardError, 'Название станции не может быть пустым' if name.gsub(/[[:space:]]/, '').empty?
     raise StandardError, 'Введите первым символом букву' unless name =~ /^[a-z]+.+$/i
     raise StandardError, 'Слишком длинное название станции' if name.size > 25
   end

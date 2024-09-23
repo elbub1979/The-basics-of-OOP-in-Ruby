@@ -16,8 +16,6 @@ class Railway
   include StationsMenu
   include RoutesMenu
 
-  WAGONS_TYPE = { pass: PassengerWagon, cargo: CargoWagon }.freeze
-  TRAINS_TYPE = { pass: PassengerTrain, cargo: CargoTrain }.freeze
 
   def initialize
     @stations = []

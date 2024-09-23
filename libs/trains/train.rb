@@ -4,7 +4,9 @@ class Train
   include Manufacturer
   include InstanceCounter
   include Validators
-  
+
+  TRAINS_TYPE = { pass: PassengerTrain, cargo: CargoTrain }.freeze
+
   class << self
     def find(number)
       ObjectSpace.each_object(self).select { |instance| instance.number == number }
@@ -76,6 +78,10 @@ class Train
 
   def type
     self.class.to_s
+  end
+
+  def self.trains_type!(type)
+    raise StandardError, 'Выбран несуществющий тип поезда' if TRAINS_TYPE[type].nil?
   end
 
   private
