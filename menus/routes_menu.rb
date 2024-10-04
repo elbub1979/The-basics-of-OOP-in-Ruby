@@ -5,11 +5,16 @@ module RoutesMenu
         1. Список маршрутов
         2. Создать маршрут
         3. Удалить маршрут
-        4. Добавить промежуточные станции 
+        4. Добавить промежуточные станции
         5. Вернуться
       ROUTESMENU
 
-      choice = Integer(gets)
+      begin
+        choice = Integer(gets)
+      rescue ArgumentError => e
+        puts e
+        next
+      end
 
       case choice
       when 1
@@ -29,23 +34,33 @@ module RoutesMenu
   end
 
   def routes
-    puts @routes.map.with_index { |route, index| "#{index}: #{route.initial_station}  - #{route.initial_station}" }.join("\n")
+    if @routes.empty?
+      puts 'Маршрутов нет'
+    else
+      puts @routes.map.with_index { |route, index| "#{index}: #{route.initial_station}  - #{route.initial_station}" }.join("\n")
+    end
   end
 
   def create_route
-    return puts 'Нет станций для создания маршрута' if @stations.empty? || @stations.size == 1
-    return puts 'Нет свободных станций' unless free_stations.size > 1
+    begin
+      can_create_route?
+    rescue StandardError => e
+      puts e
+      retry
+    end
 
     puts free_stations_list
 
-    p 'Выберите начальную и конечную станцию (через пробел)'
+    p 'Выберите начальную и конечную станцию (через пробел, не более двух станций)'
 
-    selected_stations_index = gets.chomp.split(' ').map(&:to_i)
+    begin
+      stations = get_stations
+    rescue StandardError => e
+      puts e
+      retry
+    end
 
-    return puts 'Выбранный(ые) индексы вне указанного диапазона' if select_stations_out_of_range(selected_stations_index)
-
-    initial_station = @stations[0]
-    final_station = @stations[1]
+    initial_station, final_station = stations
 
     @routes << Route.new(initial_station, final_station)
   end
@@ -53,35 +68,54 @@ module RoutesMenu
   def delete_route
     puts routes
     p 'Выберите маршрут: '
-    index = Integer(gets)
-    route = @routes[index]
 
-    return puts 'Такого маршрута не существует' if route.nil?
+    begin
+      route = get_route
+    rescue ArgumentError => e
+      puts 'Введите корректный номер'
+      retry
+    rescue StandardError => e
+      puts e
+      retry
+    end
 
     @routes.delete(route)
     puts 'Маршрут удален'
   end
 
   def add_intermediate_stations
-    return puts 'Нет станций для создания маршрута' if @stations.empty?
-    return puts 'Нет свободных станций' unless free_stations.empty?
+    begin
+      can_create_intermediate_station?
+    rescue StandardError => e
+      puts e
+      retry
+    end
 
     puts routes
     p 'Выберите маршрут'
-    route = @routes[Integer(gets)]
 
-    return puts 'Выбран несуществующий маршрут' if route.nil?
+    begin
+      route = get_route
+    rescue ArgumentError => e
+      puts 'Введите корректный номер'
+      retry
+    rescue StandardError => e
+      puts e
+      retry
+    end
 
     puts free_stations_list
 
-    p 'Выберите начальную и конечную станцию (через пробел)'
+    p 'Выберите станции (через пробел)'
 
-    selected_stations_index = gets.chomp.split(' ').map(&:to_i)
+    begin
+      stations = get_stations
+    rescue StandardError => e
+      puts e
+      retry
+    end
 
-    return puts 'Выбранный(ые) индексы вне указанного диапазона' if select_stations_out_of_range(selected_stations_index)
-
-    intermediate_stations = selected_stations_index.map { |index| @stations[index] }
-    route.add_intermediate_station(*intermediate_stations)
+    route.add_intermediate_station(*stations)
   end
 
   def free_stations
@@ -96,4 +130,36 @@ module RoutesMenu
     free_stations_indexes_range = (0..free_stations.size - 1)
     stations_indexes.any? { |index| !free_stations_indexes_range.cover?(index) }
   end
+
+  def can_create_route?
+    raise StandardError, 'Нет станций для создания маршрута' if @stations.empty? || @stations.size == 1
+    raise StandardError, 'Нет свободных станций' unless free_stations.size > 1
+  end
+
+  def can_create_intermediate_station?
+    raise StandardError, 'Нет станций для создания маршрута' if @stations.empty?
+    raise StandardError, 'Нет свободных станций' if free_stations.empty?
+  end
+
+  def get_stations
+    stations_index_str = gets.chomp
+
+    raise StandardError, 'Выбрать только индексы' if stations_index_str =~ /^[a-z].*$/i
+
+    stations_index_int = stations_index_str.split(' ').map!(&:to_i)
+
+    raise StandardError, 'Выбранный(ые) индексы вне указанного диапазона' if select_stations_out_of_range(stations_index_int)
+
+    stations_index_int.map { |index| @stations[index] }
+  end
+
+  def get_route
+    index = Integer(gets)
+    route = @routes[index]
+
+    raise StandardError, 'Такого марщрута не существует' if route.nil?
+
+    route
+  end
 end
+

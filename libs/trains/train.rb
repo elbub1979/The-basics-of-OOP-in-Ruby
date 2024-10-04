@@ -5,7 +5,8 @@ class Train
   include InstanceCounter
   include Validators
 
-  TRAINS_TYPE = { pass: PassengerTrain, cargo: CargoTrain }.freeze
+  TRAINS_TYPE = { pass: 'PassengerTrain', cargo: 'CargoTrain' }.freeze
+  NUMBER_FORMAT = /^[a-z0-9]{3}-?[a-z0-9]{2}$/i
 
   class << self
     def find(number)
@@ -17,21 +18,24 @@ class Train
   attr_accessor :speed
 
   def initialize(number, wagons = [])
-    validate!
     @number = number
     @wagons = wagons
     @speed = 0
+    validate!
     register_instance
   end
 
   def add_wagon(wagon)
-    @wagons << wagon if train_standing?
+    raise StandardError, 'Поезд в пути' unless train_standing?
+
+    @wagons << wagon
   end
 
   def delete_wagon(wagon)
-    return 'Поезд остался без вагонов' if @wagons.nil?
+    raise StandardError, 'Поезд остался без вагонов' if @wagons.empty?
+    raise StandardError, 'Поезд в пути' unless train_standing?
 
-    @wagons.delete(wagon) if train_standing?
+    @wagons.delete(wagon)
   end
 
   def assign_route(route)
@@ -84,10 +88,16 @@ class Train
     raise StandardError, 'Выбран несуществющий тип поезда' if TRAINS_TYPE[type].nil?
   end
 
+  def use?(wagon)
+    @wagons.include?(wagon)
+  end
+
   private
 
   def validate!
-    raise StandardError, 'Введите корректный номер' unless name =~ /^[a-z0-9]{3}-?[a-z0-9]{2}$/i
+    raise StandardError, 'Введите корректный номер' if @number !~ NUMBER_FORMAT
+
+    true
   end
 
   def train_standing?
@@ -100,9 +110,5 @@ class Train
 
   def current_station_final?
     current_station == @route.final_station
-  end
-
-  def use?(wagon)
-    @wagons.include?(wagon)
   end
 end

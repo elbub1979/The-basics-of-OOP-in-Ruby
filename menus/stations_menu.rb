@@ -24,7 +24,7 @@ module StationsMenu
       when 3
         delete_station
       when 4
-        stations_trains
+        station_trains
       when 5
         return
       else
@@ -60,34 +60,50 @@ module StationsMenu
     p 'Выберите станцию: '
 
     begin
-      index = Integer(gets)
+      station = get_station
     rescue ArgumentError => e
-      return puts e
+      puts 'Введите корректный номер'
+      retry
+    rescue StandardError => e
+      puts e
+      retry
     end
-
-    station = @stations[index]
-
-    return puts 'Такой станции не существует' if station.nil?
-    return puts 'На станции есть поезда' unless station.trains.empty?
 
     @stations.delete(station)
     puts 'Станция удалена'
   end
 
-  def stations_trains
+  def station_trains
+    return puts 'Станций нет' if @stations.empty?
+
     puts stations
+
     p 'Выберите станцию: '
 
     begin
-      index = Integer(gets)
+      station = get_station
     rescue ArgumentError => e
-      return puts e
+      puts 'Введите корректный номер'
+      retry
+    rescue StandardError => e
+      puts e
+      retry
     end
 
+    if station.trains.empty?
+      puts 'Поездов на станции нет'
+    else
+      puts station.trains.map { |train| "#{train.number}: маршрут #{train.route.initial_station || ''} - #{train.route.initial_station || ''}" }.join("\n")
+    end
+  end
+
+  def get_station
+    index = Integer(gets)
     station = @stations[index]
 
-    return puts 'Такой станции не существует' if station.nil?
+    raise StandardError, 'Такой станции не существует' if station.nil?
+    raise StandardError, 'На станции есть поезда' unless station.trains.empty?
 
-    station.trains.map { |train| "#{train.number}: маршрут #{train.route.initial_station || ''} - #{train.route.initial_station || ''}" }.join("\n")
+    station
   end
 end

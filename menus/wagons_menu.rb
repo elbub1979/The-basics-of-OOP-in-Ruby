@@ -31,30 +31,34 @@ module WagonsMenu
   end
 
   def wagons
-    puts @wagons.map { |wagon| "#{wagon.class}: #{wagon.number}" }.join("\n")
+    if @wagons.empty?
+      puts 'Вагонов нет'
+    else
+      puts @wagons.map { |wagon| "#{wagon.class}: #{wagon.number}" }.join("\n")
+    end
   end
 
   def create_wagon
-    p 'Введите номер вагона:'
-
-    begin
-      number = Integer(gets)
-    rescue ArgumentError
-      puts 'Введите корректный номер'
-      retry
-    end
-
     p 'Введите тип вагона (pass или cargo):'
 
     begin
       choice = gets.chomp.to_sym
       Wagon.wagons_type!(choice)
+      wagon_type = Wagon::WAGONS_TYPE[choice]
     rescue StandardError => e
       puts e
       retry
     end
 
-    @wagons << WAGONS_TYPE[choice].new(number)
+    p 'Введите номер вагона:'
+
+    begin
+      number = gets.chomp
+      @wagons << Object.const_get(wagon_type).new(number)
+    rescue StandardError => e
+      puts e
+      retry
+    end
   end
 
   def delete_wagon
@@ -62,15 +66,16 @@ module WagonsMenu
 
     begin
       number = Integer(gets)
+      wagon = @wagons[number]
+      raise StandardError, 'Выберите вагон из списка' if wagon.nil?
+      raise StandardError, 'Вагон прицеплен к поезду' if wagon_used?(wagon)
     rescue ArgumentError
       puts 'Введите корректный номер'
       retry
+    rescue StandardError => e
+      puts e
+      retry
     end
-
-    wagon = @wagons[number]
-
-    return puts 'Выберите вагон из списка' if wagon.nil?
-    return puts 'Вагон прицеплен к поезду' if wagon_used?(wagon)
 
     @trains.wagons.delete(wagon)
   end

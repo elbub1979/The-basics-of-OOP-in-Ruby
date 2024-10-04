@@ -14,10 +14,10 @@ class Station
   attr_reader :name, :trains
 
   def initialize(name)
-    validate!
     @name = name
     @trains = []
     register_instance
+    validate!
   end
 
   def trains_type
@@ -37,8 +37,7 @@ class Station
   private
 
   def validate!
-    # raise StandardError, 'Название станции не может быть пустым' if name.gsub(/[[:space:]]/, '').empty?
-    raise StandardError, 'Введите первым символом букву' unless name =~ /^[a-z]+.+$/i
+    raise StandardError, 'Введите первым символом букву' if @name !~ /^[a-z].*$/i
     raise StandardError, 'Слишком длинное название станции' if name.size > 25
   end
 end

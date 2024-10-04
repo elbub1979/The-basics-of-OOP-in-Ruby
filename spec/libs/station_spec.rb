@@ -1,4 +1,7 @@
-require_relative '../../libs/station.rb'
+# frozen_string_literal: true
+
+Dir['./libs/modules/*.rb'].each { |file| require file }
+require_relative '../../libs/station'
 require_relative '../../libs/trains/train'
 require_relative '../../libs/trains/cargo_train'
 require_relative '../../libs/trains/passenger_train'

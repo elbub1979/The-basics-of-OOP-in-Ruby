@@ -1,13 +1,14 @@
-require_relative 'libs/route'
-require_relative 'libs/station'
-require_relative 'libs/trains/train'
-require_relative 'libs/trains/cargo_train'
-require_relative 'libs/trains/passenger_train'
+Dir['./libs/modules/*.rb'].each { |file| require_relative file }
 require_relative 'libs/wagons/wagon'
 require_relative 'libs/wagons/cargo_wagon'
 require_relative 'libs/wagons/passenger_wagon'
+require_relative 'libs/trains/train'
+require_relative 'libs/trains/cargo_train'
+require_relative 'libs/trains/passenger_train'
+require_relative 'libs/route'
+require_relative 'libs/station'
+# require_relative 'libs/modules/instance_counter'
 
-Dir['./libs/modules/*.rb'].each { |file| require_relative file }
 Dir['./menus/*.rb'].each { |file| require_relative file }
 
 class Railway
