@@ -6,7 +6,7 @@ class Train
   include Validators
 
   TRAINS_TYPE = { pass: 'PassengerTrain', cargo: 'CargoTrain' }.freeze
-  NUMBER_FORMAT = /^[a-z0-9]{3}-?[a-z0-9]{2}$/i
+  NUMBER_FORMAT = /^[a-z0-9]{3}-?[a-z0-9]{2}$/i.freeze
 
   class << self
     def find(number)
@@ -90,6 +90,12 @@ class Train
 
   def use?(wagon)
     @wagons.include?(wagon)
+  end
+
+  def all_wagons(&block)
+    raise StandardError, 'Нет вагонов' if @wagons.empty?
+
+    @wagons.each(&block)
   end
 
   private

@@ -34,6 +34,10 @@ class Station
     @trains << train
   end
 
+  def all_trains(&block)
+    @trains.each(&block)
+  end
+
   private
 
   def validate!
