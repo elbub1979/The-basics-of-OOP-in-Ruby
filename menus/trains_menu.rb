@@ -6,12 +6,13 @@ module TrainsMenu
         1. Список поездов
         2. Создать поезд
         3. Удалить поезд
-        4. Прицепить вагон к поезду
-        5. Отцепить вагон от поезда
-        6. Присвоить маршрут
-        7. Переместить на следующую станцию
-        8. Переместить на предыдущую станцию#{'   '}
-        9. Вернуться
+        4. Показать вагоны у поезда
+        5. Прицепить вагон к поезду
+        6. Отцепить вагон от поезда
+        7. Присвоить маршрут
+        8. Переместить на следующую станцию
+        9. Переместить на предыдущую станцию#{'   '}
+        10. Вернуться
       TRAINSNMENU
 
       begin
@@ -29,16 +30,18 @@ module TrainsMenu
       when 3
         delete_train
       when 4
-        add_wagon
+        all_wagons
       when 5
-        remove_wagon
+        add_wagon
       when 6
-        assign_route
+        remove_wagon
       when 7
-        move_next_station
+        assign_route
       when 8
-        move_previous_station
+        move_next_station
       when 9
+        move_previous_station
+      when 10
         return
       else
         puts 'Выберите один из указанных пунктов меню'
@@ -47,14 +50,12 @@ module TrainsMenu
   end
 
   def trains
-    if @trains.empty?
-      puts 'Нет поездов'
-    else
-      puts(@trains.map.with_index { |train, index|
-        "#{index}: #{train.number}, #{train.class},
+    return puts 'Нет поездов' if @trains.empty?
+
+    puts(@trains.map.with_index { |train, index|
+      "#{index}: #{train.number}, #{train.class},
          #{train.route&.extreme_stations&.map(&:name)&.join(' - ')}"
-      })
-    end
+    })
   end
 
   def create_train
@@ -97,6 +98,27 @@ module TrainsMenu
     end
 
     @trains.delete(train)
+  end
+
+  def all_wagons
+    trains
+
+    begin
+      train = get_train
+    rescue ArgumentError
+      puts 'Введите корректный номер'
+      retry
+    rescue StandardError => e
+      puts e
+      retry
+    end
+
+    return puts 'У поезда нет вагонов' if train.wagons.empty?
+
+    train.all_wagons do |wagon|
+      measurement_unit = wagon.class::MEASUREMENT_UNIT
+      puts "Номер:#{wagon.number}, тип: #{wagon.type}, всего #{measurement_unit}: #{wagon.capacity}, занято: #{measurement_unit}: #{wagon.reserve_capacity}"
+    end
   end
 
   def add_wagon

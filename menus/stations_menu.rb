@@ -90,10 +90,10 @@ module StationsMenu
       retry
     end
 
-    if station.trains.empty?
-      puts 'Поездов на станции нет'
-    else
-      puts station.trains.map { |train| "#{train.number}: маршрут #{train.route.initial_station || ''} - #{train.route.initial_station || ''}" }.join("\n")
+    return puts 'Поездов на станции нет' if station.trains.empty?
+
+    station.all_trains do |train|
+      puts "Номер: #{train.number}, тип #{train.type}, количество вагонов: #{train.wagons.count}"
     end
   end
 

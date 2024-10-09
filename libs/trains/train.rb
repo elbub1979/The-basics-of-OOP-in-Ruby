@@ -98,6 +98,16 @@ class Train
     @wagons.each(&block)
   end
 
+  def type
+    type = self.class
+
+    if type.is_a?(PassengerTrain)
+      'пассажирский'
+    elsif type.is_a?(CargoTrain)
+      'грузовой'
+    end
+  end
+
   private
 
   def validate!

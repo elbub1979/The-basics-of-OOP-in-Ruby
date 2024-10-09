@@ -5,7 +5,8 @@ module WagonsMenu
         1. Список вагонов
         2. Создать вагон
         3. Удалить вагон
-        4. Вернуться
+        4. Зарезервировать место или объем
+        5. Вернуться
       WAGONSMENU
 
       begin
@@ -23,6 +24,8 @@ module WagonsMenu
       when 3
         delete_wagon
       when 4
+        reservation
+      when 5
         return
       else
         puts 'Выберите один из указанных пунктов меню'
@@ -50,11 +53,27 @@ module WagonsMenu
       retry
     end
 
+    case wagon_type
+    when Wagon::WAGONS_TYPE[:pass]
+      puts 'Введите количество мест'
+    when Wagon::WAGONS_TYPE[:cargo]
+      puts 'Введите объем вагона'
+    else
+      return puts 'Что то пошло не так'
+    end
+
+    begin
+      capacity = Integer(gets)
+    rescue ArgumentError
+      puts 'Введите число'
+      retry
+    end
+
     p 'Введите номер вагона:'
 
     begin
       number = gets.chomp
-      @wagons << Object.const_get(wagon_type).new(number)
+      @wagons << Object.const_get(wagon_type).new(number, capacity)
     rescue StandardError => e
       puts e
       retry
@@ -80,7 +99,51 @@ module WagonsMenu
     @trains.wagons.delete(wagon)
   end
 
+  def reservation
+    wagons
+
+    begin
+      number = Integer(gets)
+      wagon = @wagons[number]
+      raise StandardError, 'Выберите вагон из списка' if wagon.nil?
+    rescue ArgumentError
+      puts 'Введите корректный номер'
+      retry
+    rescue StandardError => e
+      puts e
+      retry
+    end
+
+    if wagon.is_a?(PassengerWagon)
+      pass_reservation_capacity(wagon)
+    elsif wagon.is_a?(CargoWagon)
+      cargo_reservation_capacity(wagon)
+    end
+  end
+
   def wagon_used?(wagon)
     @trains.any { |train| train.use?(wagon) }
+  end
+
+  def pass_reservation_capacity(wagon)
+    begin
+      wagon.reservation_capacity
+    rescue StandardError => e
+      puts e
+    end
+  end
+
+  def cargo_reservation_capacity(wagon)
+    puts 'Введите объем груза'
+
+    begin
+      volume = Integer(gets)
+      wagon.reservation_capacity(volume)
+    rescue ArgumentError
+      puts 'Введите корректный номер'
+      retry
+    rescue StandardError => e
+      puts e
+    end
   end
 end

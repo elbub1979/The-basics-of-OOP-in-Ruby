@@ -1,28 +1,15 @@
 class PassengerWagon < Wagon
-  attr_reader :seats, :reserve_seats
+  MEASUREMENT_UNIT = 'мест'.freeze
 
-  def initialize(number, seats)
-    @reserve_seats = 0
-    @seats = seats
-    super(number)
-    validate!
-  end
-
-  def reserve_seat
+  def reservation_capacity
     raise StandardError, 'Нет свободных мест' unless available_seats?
 
-    @reserve_seats += 1
+    @reserve_capacity += 1
   end
 
   private
 
   def available_seats?
-    @reserve_seats <= @seats
-  end
-
-  def validate!
-    raise StandardError, 'Мест в вагоне не может быть 0' if @seats.zero?
-
-    super
+    @reserve_capacity <= @capacity
   end
 end
