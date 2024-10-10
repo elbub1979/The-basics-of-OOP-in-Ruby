@@ -5,13 +5,13 @@ class Station
   include InstanceCounter
   include Validators
 
+  attr_reader :name, :trains
+
   class << self
     def all
       ObjectSpace.each_object(self).each_with_object([]) { |instance, accum| accum << instance }
     end
   end
-
-  attr_reader :name, :trains
 
   def initialize(name)
     @name = name
