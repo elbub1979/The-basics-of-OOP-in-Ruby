@@ -58,7 +58,7 @@ module RoutesMenu
     p 'Выберите начальную и конечную станцию (через пробел, не более двух станций)'
 
     begin
-      stations = get_stations
+      stations = self.stations
     rescue StandardError => e
       puts e
       retry
@@ -74,7 +74,7 @@ module RoutesMenu
     p 'Выберите маршрут: '
 
     begin
-      route = get_route
+      route = self.route
     rescue ArgumentError => e
       puts 'Введите корректный номер'
       retry
@@ -89,7 +89,7 @@ module RoutesMenu
 
   def add_intermediate_stations
     begin
-      can_create_intermediate_station?
+      create_intermediate_station?
     rescue StandardError => e
       puts e
       retry
@@ -99,7 +99,7 @@ module RoutesMenu
     p 'Выберите маршрут'
 
     begin
-      route = get_route
+      route = self.route
     rescue ArgumentError => e
       puts 'Введите корректный номер'
       retry
@@ -113,7 +113,7 @@ module RoutesMenu
     p 'Выберите станции (через пробел)'
 
     begin
-      stations = get_stations
+      stations = self.stations
     rescue StandardError => e
       puts e
       retry
@@ -140,12 +140,12 @@ module RoutesMenu
     raise StandardError, 'Нет свободных станций' unless free_stations.size > 1
   end
 
-  def can_create_intermediate_station?
+  def create_intermediate_station?
     raise StandardError, 'Нет станций для создания маршрута' if @stations.empty?
     raise StandardError, 'Нет свободных станций' if free_stations.empty?
   end
 
-  def get_stations
+  def stations
     stations_index_str = gets.chomp
 
     raise StandardError, 'Выбрать только индексы' if stations_index_str =~ /^[a-z].*$/i
@@ -160,7 +160,7 @@ module RoutesMenu
     stations_index_int.map { |index| @stations[index] }
   end
 
-  def get_route
+  def route
     index = Integer(gets)
     route = @routes[index]
 
