@@ -8,14 +8,18 @@ class Train
   TRAINS_TYPE = { pass: 'PassengerTrain', cargo: 'CargoTrain' }.freeze
   NUMBER_FORMAT = /^[a-z0-9]{3}-?[a-z0-9]{2}$/i
 
+  attr_reader :number, :wagons, :current_station_index, :route
+  attr_accessor :speed
+
   class << self
     def find(number)
       ObjectSpace.each_object(self).select { |instance| instance.number == number }
     end
-  end
 
-  attr_reader :number, :wagons, :current_station_index, :route
-  attr_accessor :speed
+    def trains_type!(type)
+      raise StandardError, 'Выбран несуществющий тип поезда' if TRAINS_TYPE[type].nil?
+    end
+  end
 
   def initialize(number, wagons = [])
     @number = number
@@ -78,14 +82,6 @@ class Train
 
   def current_station
     @route.stations[@current_station_index]
-  end
-
-  def type
-    self.class.to_s
-  end
-
-  def self.trains_type!(type)
-    raise StandardError, 'Выбран несуществющий тип поезда' if TRAINS_TYPE[type].nil?
   end
 
   def use?(wagon)
