@@ -89,7 +89,7 @@ module TrainsMenu
     p 'Введите номер поезда:'
 
     begin
-      train = get_train
+      train = self.train
     rescue ArgumentError
       puts 'Введите корректный номер'
       retry
@@ -105,7 +105,7 @@ module TrainsMenu
     trains
 
     begin
-      train = get_train
+      train = self.train
     rescue ArgumentError
       puts 'Введите корректный номер'
       retry
@@ -118,7 +118,10 @@ module TrainsMenu
 
     train.all_wagons do |wagon|
       measurement_unit = wagon.class::MEASUREMENT_UNIT
-      puts "Номер:#{wagon.number}, тип: #{wagon.type}, всего #{measurement_unit}: #{wagon.capacity}, занято: #{measurement_unit}: #{wagon.reserve_capacity}"
+      puts "Номер:#{wagon.number},
+            тип: #{wagon.type},
+            всего #{measurement_unit}: #{wagon.capacity},
+            занято: #{measurement_unit}: #{wagon.reserve_capacity}"
     end
   end
 
@@ -131,7 +134,7 @@ module TrainsMenu
     puts 'Выберите поезд'
 
     begin
-      train = get_train
+      train = self.train
     rescue ArgumentError
       puts 'Введите корректный номер'
       retry
@@ -170,7 +173,7 @@ module TrainsMenu
     puts 'Выберите поезд'
 
     begin
-      train = get_train
+      train = self.train
     rescue ArgumentError
       puts 'Введите корректный номер'
       retry
@@ -223,7 +226,7 @@ module TrainsMenu
     puts 'Выберите поезд'
 
     begin
-      train = get_train
+      train = self.train
     rescue ArgumentError
       puts 'Введите корректный номер'
       retry
@@ -242,7 +245,7 @@ module TrainsMenu
     puts 'Выберите поезд'
 
     begin
-      train = get_train
+      train = self.train
     rescue ArgumentError
       puts 'Введите корректный номер'
       retry
@@ -265,7 +268,7 @@ module TrainsMenu
     puts 'Выберите поезд'
 
     begin
-      train = get_train
+      train = self.train
     rescue ArgumentError
       puts 'Введите корректный номер'
       retry
@@ -293,7 +296,7 @@ module TrainsMenu
     train.wagons.map.with_index { |wagon, index| "#{index}: #{wagon.number}" }
   end
 
-  def get_train
+  def train
     number = Integer(gets)
     train = @trains[number]
 
