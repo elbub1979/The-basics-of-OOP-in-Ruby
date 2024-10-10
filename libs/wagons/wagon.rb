@@ -8,15 +8,15 @@ class Wagon
 
   attr_reader :number, :capacity, :reserve_capacity
 
+  def self.wagons_type!(type)
+    raise StandardError, 'Выбран несуществющий тип вагона' if WAGONS_TYPE[type].nil?
+  end
+
   def initialize(number, capacity)
     @number = number
     @reserve_capacity = 0
     @capacity = capacity
     validate!
-  end
-
-  def self.wagons_type!(type)
-    raise StandardError, 'Выбран несуществющий тип вагона' if WAGONS_TYPE[type].nil?
   end
 
   def type
