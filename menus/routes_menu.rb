@@ -49,8 +49,7 @@ module RoutesMenu
     begin
       can_create_route?
     rescue StandardError => e
-      puts e
-      retry
+      return puts e
     end
 
     puts free_stations_list
@@ -58,7 +57,7 @@ module RoutesMenu
     p 'Выберите начальную и конечную станцию (через пробел, не более двух станций)'
 
     begin
-      stations = self.stations
+      stations = select_stations
     rescue StandardError => e
       puts e
       retry
@@ -91,8 +90,7 @@ module RoutesMenu
     begin
       create_intermediate_station?
     rescue StandardError => e
-      puts e
-      retry
+      return puts e
     end
 
     puts routes
@@ -113,7 +111,7 @@ module RoutesMenu
     p 'Выберите станции (через пробел)'
 
     begin
-      stations = self.stations
+      stations = select_stations
     rescue StandardError => e
       puts e
       retry
@@ -145,7 +143,7 @@ module RoutesMenu
     raise StandardError, 'Нет свободных станций' if free_stations.empty?
   end
 
-  def stations
+  def select_stations
     stations_index_str = gets.chomp
 
     raise StandardError, 'Выбрать только индексы' if stations_index_str =~ /^[a-z].*$/i

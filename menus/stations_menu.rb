@@ -57,7 +57,7 @@ module StationsMenu
   end
 
   def delete_station
-    puts stations
+    stations
 
     p 'Выберите станцию: '
 
@@ -78,12 +78,15 @@ module StationsMenu
   def station_trains
     return puts 'Станций нет' if @stations.empty?
 
-    puts stations
+    stations
 
     p 'Выберите станцию: '
 
     begin
-      station = self.station
+      index = Integer(gets)
+      station = @stations[index]
+
+      raise StandardError, 'Такой станции не существует' if station.nil?
     rescue ArgumentError => e
       puts 'Введите корректный номер'
       retry
