@@ -95,11 +95,9 @@ class Train
   end
 
   def type
-    type = self.class
-
-    if type.is_a?(PassengerTrain)
+    if is_a?(PassengerTrain)
       'пассажирский'
-    elsif type.is_a?(CargoTrain)
+    elsif is_a?(CargoTrain)
       'грузовой'
     end
   end

@@ -8,9 +8,9 @@ require_relative '../../libs/trains/passenger_train'
 
 RSpec.describe Station do
   let(:station) { described_class.new('First station') }
-  let(:train) { Train.new('0001') }
-  let(:cargo_train) { CargoTrain.new('0001') }
-  let(:passenger_train) { PassengerTrain.new('0002') }
+  let(:train) { Train.new('000-01') }
+  let(:cargo_train) { CargoTrain.new('000-02') }
+  let(:passenger_train) { PassengerTrain.new('000-03') }
 
   context '#name' do
     it "has 'First station' name" do
@@ -50,7 +50,7 @@ RSpec.describe Station do
     context 'have trains' do
       it 'return trains type' do
         station.trains.push(cargo_train, passenger_train)
-        expect(station.trains_type).to eq({ 'PassengerTrain' => 1, 'CargoTrain' => 1 })
+        expect(station.trains_type).to eq({ 'пассажирский' => 1, 'грузовой' => 1 })
       end
     end
   end
