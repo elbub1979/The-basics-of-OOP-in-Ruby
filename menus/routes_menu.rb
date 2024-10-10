@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module RoutesMenu
   def routes_menu
     loop do
@@ -37,7 +39,9 @@ module RoutesMenu
     if @routes.empty?
       puts 'Маршрутов нет'
     else
-      puts @routes.map.with_index { |route, index| "#{index}: #{route.initial_station}  - #{route.initial_station}" }.join("\n")
+      puts @routes.map.with_index { |route, index|
+        "#{index}: #{route.initial_station}  - #{route.initial_station}"
+      }.join("\n")
     end
   end
 
@@ -148,7 +152,10 @@ module RoutesMenu
 
     stations_index_int = stations_index_str.split(' ').map!(&:to_i)
 
-    raise StandardError, 'Выбранный(ые) индексы вне указанного диапазона' if select_stations_out_of_range(stations_index_int)
+    if select_stations_out_of_range(stations_index_int)
+      raise StandardError,
+            'Выбранный(ые) индексы вне указанного диапазона'
+    end
 
     stations_index_int.map { |index| @stations[index] }
   end
@@ -162,4 +169,3 @@ module RoutesMenu
     route
   end
 end
-

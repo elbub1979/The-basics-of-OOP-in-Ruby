@@ -6,7 +6,7 @@ class Train
   include Validators
 
   TRAINS_TYPE = { pass: 'PassengerTrain', cargo: 'CargoTrain' }.freeze
-  NUMBER_FORMAT = /^[a-z0-9]{3}-?[a-z0-9]{2}$/i.freeze
+  NUMBER_FORMAT = /^[a-z0-9]{3}-?[a-z0-9]{2}$/i
 
   class << self
     def find(number)

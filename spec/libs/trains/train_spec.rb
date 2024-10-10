@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative '../../../libs/modules/manufacturer'
 require_relative '../../../libs/modules/instance_counter'
 require_relative '../../../libs/station'
@@ -69,7 +71,7 @@ RSpec.describe Train do
       route.add_intermediate_station(intermediate_station_1, intermediate_station_2)
       train.assign_route(route)
     end
-    
+
     context '#move_next_station' do
       it "train move 'Tver' station" do
         train.move_next_station
@@ -78,7 +80,6 @@ RSpec.describe Train do
       end
 
       describe 'final station' do
-
         context 'arrival at final station' do
           it 'train on final station' do
             3.times { train.move_next_station }
@@ -90,10 +91,7 @@ RSpec.describe Train do
             expect(train.move_next_station).to raise_error(StandardError)
           end
         end
-
       end
-
     end
-
   end
 end

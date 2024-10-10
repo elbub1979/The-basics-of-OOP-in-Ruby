@@ -1,5 +1,6 @@
-module TrainsMenu
+# frozen_string_literal: true
 
+module TrainsMenu
   def trains_menu
     loop do
       puts <<~TRAINSNMENU
@@ -52,10 +53,10 @@ module TrainsMenu
   def trains
     return puts 'Нет поездов' if @trains.empty?
 
-    puts(@trains.map.with_index { |train, index|
+    puts(@trains.map.with_index do |train, index|
       "#{index}: #{train.number}, #{train.class},
          #{train.route&.extreme_stations&.map(&:name)&.join(' - ')}"
-    })
+    end)
   end
 
   def create_train

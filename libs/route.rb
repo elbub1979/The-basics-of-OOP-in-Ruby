@@ -30,8 +30,8 @@ class Route
 
   def use?(station)
     initial_station.equal?(station) || final_station.equal?(station) ||
-                             @intermediate_stations.
-                               any?{ |intermediate_station| intermediate_station.equal?(station) }
+      @intermediate_stations
+        .any? { |intermediate_station| intermediate_station.equal?(station) }
   end
 
   private

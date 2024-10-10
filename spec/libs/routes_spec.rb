@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative '../../libs/station'
 require_relative '../../libs/route'
 
@@ -10,7 +12,6 @@ RSpec.describe Station do
   let(:free_station) { Station.new('Vladivistok') }
 
   describe 'stations' do
-
     context '#extreme stations' do
       it 'return initial and final stations' do
         expect(route.stations).to eq([initial_station, final_station])
@@ -23,7 +24,6 @@ RSpec.describe Station do
 
         expect(route.stations).to eq([initial_station, intermediate_station_1, final_station])
       end
-
     end
 
     context '#delete_intermediate_station' do
@@ -48,7 +48,6 @@ RSpec.describe Station do
         it 'return all stations' do
           expect(route.stations).to eq([initial_station, intermediate_station_1, intermediate_station_2, final_station])
         end
-
       end
     end
 
@@ -59,7 +58,6 @@ RSpec.describe Station do
 
       it 'use in extreme stations' do
         expect(route.use?(initial_station)).to eq(true)
-
       end
 
       it 'use in intermediate stations' do

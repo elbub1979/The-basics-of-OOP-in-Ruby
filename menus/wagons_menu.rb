@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module WagonsMenu
   def wagons_menu
     loop do
@@ -126,11 +128,9 @@ module WagonsMenu
   end
 
   def pass_reservation_capacity(wagon)
-    begin
-      wagon.reservation_capacity
-    rescue StandardError => e
-      puts e
-    end
+    wagon.reservation_capacity
+  rescue StandardError => e
+    puts e
   end
 
   def cargo_reservation_capacity(wagon)

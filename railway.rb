@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 Dir['./libs/modules/*.rb'].each { |file| require_relative file }
 require_relative 'libs/wagons/wagon'
 require_relative 'libs/wagons/cargo_wagon'
@@ -16,7 +18,6 @@ class Railway
   include TrainsMenu
   include StationsMenu
   include RoutesMenu
-
 
   def initialize
     @stations = []

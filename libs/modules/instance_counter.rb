@@ -1,5 +1,6 @@
-module InstanceCounter
+# frozen_string_literal: true
 
+module InstanceCounter
   def self.included(base)
     base.extend ClassMethods
     base.include InstanceMethods
@@ -15,6 +16,7 @@ module InstanceCounter
 
   module InstanceMethods
     private
+
     def register_instance
       current_count = InstanceCounter.class_variable_get '@@instances_count'
       InstanceCounter.class_variable_set '@@instances_count', current_count + 1

@@ -49,10 +49,9 @@ RSpec.describe Station do
 
     context 'have trains' do
       it 'return trains type' do
-        station.trains.push(*[cargo_train, passenger_train])
+        station.trains.push(cargo_train, passenger_train)
         expect(station.trains_type).to eq({ 'PassengerTrain' => 1, 'CargoTrain' => 1 })
       end
     end
   end
 end
-

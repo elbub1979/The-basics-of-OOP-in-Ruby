@@ -1,5 +1,7 @@
+# frozen_string_literal: true
+
 class PassengerWagon < Wagon
-  MEASUREMENT_UNIT = 'мест'.freeze
+  MEASUREMENT_UNIT = 'мест'
 
   def reservation_capacity
     raise StandardError, 'Нет свободных мест' unless available_seats?
