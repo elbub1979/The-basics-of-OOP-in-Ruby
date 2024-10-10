@@ -62,7 +62,7 @@ module StationsMenu
     p 'Выберите станцию: '
 
     begin
-      station = get_station
+      station = self.station
     rescue ArgumentError => e
       puts 'Введите корректный номер'
       retry
@@ -83,7 +83,7 @@ module StationsMenu
     p 'Выберите станцию: '
 
     begin
-      station = get_station
+      station = self.station
     rescue ArgumentError => e
       puts 'Введите корректный номер'
       retry
@@ -99,7 +99,7 @@ module StationsMenu
     end
   end
 
-  def get_station
+  def station
     index = Integer(gets)
     station = @stations[index]
 
