@@ -3,13 +3,17 @@
 # Station class
 class Station
   include InstanceCounter
-  include Validators
+  include Validation
 
   attr_reader :name, :trains
 
   class << self
     def all
       ObjectSpace.each_object(self).each_with_object([]) { |instance, accum| accum << instance }
+    end
+
+    def validate_attributes(object)
+      validate(object, :name, :presence)
     end
   end
 
@@ -36,12 +40,5 @@ class Station
 
   def all_trains(&block)
     @trains.each(&block)
-  end
-
-  private
-
-  def validate!
-    raise StandardError, 'Введите первым символом букву' if @name !~ /^[a-z].*$/i
-    raise StandardError, 'Слишком длинное название станции' if name.size > 25
   end
 end

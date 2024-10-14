@@ -2,14 +2,24 @@
 
 class Wagon
   include Manufacturer
-  include Validators
+  include Validation
 
   WAGONS_TYPE = { pass: 'PassengerWagon', cargo: 'CargoWagon' }.freeze
+  NUMBER_FORMAT = /^[0-9]{3,}$/
 
   attr_reader :number, :capacity, :reserve_capacity
 
-  def self.wagons_type!(type)
-    raise StandardError, 'Выбран несуществющий тип вагона' if WAGONS_TYPE[type].nil?
+  class << self
+    def wagons_type!(type)
+      raise StandardError, 'Выбран несуществющий тип вагона' if WAGONS_TYPE[type].nil?
+    end
+
+    def validate_attributes(object)
+      validate(object, :capacity, :length, :minimum, 5)
+      validate(object, :number, :presence)
+      validate(object, :number, :format, NUMBER_FORMAT)
+      validate(object, :capacity, :presence)
+    end
   end
 
   def initialize(number, capacity)
@@ -27,12 +37,5 @@ class Wagon
     elsif type.is_a?(CargoWagon)
       'грузовой'
     end
-  end
-
-  private
-
-  def validate!
-    raise StandardError, 'Введите корректный номер' if @number !~ /^[0-9]{3,}$/
-    raise StandardError, 'Объем в вагоне не может быть 0' if @capacity.zero?
   end
 end

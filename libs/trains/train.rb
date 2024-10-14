@@ -3,7 +3,7 @@
 class Train
   include Manufacturer
   include InstanceCounter
-  include Validators
+  include Validation
 
   TRAINS_TYPE = { pass: 'PassengerTrain', cargo: 'CargoTrain' }.freeze
   NUMBER_FORMAT = /^[a-z0-9]{3}-?[a-z0-9]{2}$/i
@@ -18,6 +18,11 @@ class Train
 
     def trains_type!(type)
       raise StandardError, 'Выбран несуществющий тип поезда' if TRAINS_TYPE[type].nil?
+    end
+
+    def validate_attributes(object)
+      validate(object, :number, :presence)
+      validate(object, :number, :format, NUMBER_FORMAT)
     end
   end
 
@@ -103,12 +108,6 @@ class Train
   end
 
   private
-
-  def validate!
-    raise StandardError, 'Введите корректный номер' if @number !~ NUMBER_FORMAT
-
-    true
-  end
 
   def train_standing?
     @speed.zero?
